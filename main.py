@@ -54,7 +54,7 @@ def main():
         # State for if the bot has already replied to the submission
         # Necessary, because Heroku Dynos don't allow persistance for any kind of data
         already_answered = False
-        print("Currently checking submission {} with the title '{}...'").format(str(submission.id), str(submission.title)[:15])
+        print("Currently checking submission {} with the title '{}...'".format(str(submission.id), str(submission.title)[:15]))
 
         while not already_answered: 
 
