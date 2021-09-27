@@ -1,7 +1,6 @@
 from logging import raiseExceptions
 import praw
 import os
-import secret
 
 def main():
     try:
