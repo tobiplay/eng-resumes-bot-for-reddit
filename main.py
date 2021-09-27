@@ -61,7 +61,7 @@ def main():
             # The bot will only make top-level replies to a post, so we only look for those top-level comments on each post
             for comment in submission.comments:
                 # Check if the author of current top-level comment is our bot
-                if comment.author == str(os.environ[USERNAME]):
+                if comment.author == str(os.environ['USERNAME']):
                     # Was already answered -> exit loop and exit the routine as we don't need to check any more comments
                     already_answered = True
                     break
