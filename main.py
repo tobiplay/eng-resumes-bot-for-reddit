@@ -34,11 +34,11 @@ def main():
 *Beep, boop - this is an automated reply. If you've got any questions surrounding my existance, please [contact the moderators of this subreddit](https://www.reddit.com/message/compose/?to=/r/engineeringresumes&subject=Problem%20or%20question%20regarding%20bot&message=)!*
 '''
 
-    submission_limit = 2
+    submission_limit = os.environ['SUBMISSION_LIMIT']
 
-    if submission_limit > 10:
-        print("Submission limit is too high at {} and therefore automatically set to 5".format(submission_limit))
-        submission_limit = 10
+    if submission_limit > 20:
+        print("Submission limit is too high at {} and therefore automatically set to 20".format(submission_limit))
+        submission_limit = 20
 
     # Are we able to only read but not edit comments? -> False, if we can edit them, too
     # print(reddit.read_only)
