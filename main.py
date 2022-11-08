@@ -15,7 +15,6 @@ def main():
         user_agent = os.getenv("USER_AGENT")
         username = os.getenv("USERNAME")
         password = os.getenv("PASSWORD")
-        submission_limit = os.getenv("SUBMISSION_LIMIT")
 
         # Manually overwrite the submission limit for now:
         submission_limit = 20
@@ -42,11 +41,6 @@ def main():
 *Beep, boop - this is an automated reply. If you've got any questions surrounding my existance, please [contact the moderators of this subreddit](https://www.reddit.com/message/compose/?to=/r/engineeringresumes&subject=Problem%20or%20question%20regarding%20bot&message=)!*
 '''
 
-    if submission_limit > 20:
-        print("Submission limit is too high at {} and therefore automatically set to 20".format(
-            submission_limit))
-        submission_limit = 20
-
     # Are we able to only read but not edit comments? -> False, if we can edit them, too
     # print(reddit.read_only)
 
@@ -54,7 +48,7 @@ def main():
     # print(subreddit.display_name, subreddit.title)
 
     # Assume you have a Subreddit instance bound to variable `subreddit`
-    for submission in subreddit.new(limit=submission_limit):
+    for submission in subreddit.new(limit=20):
         # We'll go through each submission in the subreddit up until the set limit
         # print(submission.title, submission.score, submission.url, submission.id)
 
@@ -69,7 +63,7 @@ def main():
             # The bot will only make top-level replies to a post, so we only look for those top-level comments on each post
             for comment in submission.comments:
                 # Check if the author of current top-level comment is our bot
-                if comment.author == str(os.environ['USERNAME']):
+                if comment.author == str(username):
                     # Was already answered -> exit loop and exit the routine as we don't need to check any more comments
                     already_answered = True
                     break
