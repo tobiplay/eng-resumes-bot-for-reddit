@@ -40,8 +40,6 @@ async def main():
             password=password
         )
 
-        logging.info(await reddit.user.me())
-
     except:
         raise ConnectionError("Network connection could not be established")
 
@@ -57,46 +55,48 @@ async def main():
 '''
 
     logging.info("Creating a subreddit instance.")
-    subreddit = await reddit.subreddit("engineeringresumes")
+    subreddit = await reddit.subreddit("engineeringresumes", fetch=True)
     logging.info(f"Grabbed 'r/{subreddit.display_name}'.")
 
+    # Althugh I'm not a huge fan of magic numbers, hardcoding the limit
+    # as 20 is sufficient for now.
     logging.info("Iterating through the stream of new 20 submissions.")
-    async for submission in subreddit.new(limit=5):
-        logging.info(f"Inside submission '{submission.title}'")
-        # # We can't store information about previously answered submissions,
-        # # so we have to check if the bot has already replied to the submission.
-        # logging.info(
-        #     f"Checking if submission {str(submission.id)} with the title '{str(submission.title[:15])}...' has already been replied to.")
-        # already_answered = False
+    async for submission in subreddit.new(limit=20):
+        # We can't store information about previously answered submissions,
+        # so we have to check if the bot has already replied to the submission.
+        logging.info(
+            f"Checking if submission {str(submission.id)} with the title '{str(submission.title[:15])}...' has already been replied to.")
 
-        # while not already_answered:
+        comments = await submission.comments()
 
-        #     # The bot will only make top-level replies to a post, so we only
-        #     # look for those top-level comments on each post:
-        #     for comment in submission.comments:
-        #         # Check if the author of current top-level comment is our bot:
-        #         if comment.author == str(username):
-        #             # If the post was already replied to, we set the flag to
-        #             # True and break out of the loop.
-        #             already_answered = True
-        #             break
+        # If the submission has no comments, or there's no comment by the bot,
+        # then we can reply to the submission.
+        if not comments:
+            logging.info("No comments found. Reply with bot message.")
+            bot_comment = await submission.reply(bot_message)
+            await bot_comment.mod.distinguish(how='yes', sticky=True)
+            await bot_comment.mod.lock()
 
-        #     # There is no top-level comment from our bot, so we now need to
-        #     # comment with the defined message.
-        #     if not already_answered:
-        #         bot_comment = submission.reply(bot_message)
-        #         bot_comment.mod.distinguish(how='yes', sticky=True)
-        #         bot_comment.mod.lock()
-        #         logging.info(
-        #             f'Added a locked bot message to submission {submission.id}.')
+        else:
+            already_replied = False
 
-        #         already_answered = True
+            logging.info("Found comments and checking for bot replies.")
+            # The bot will only make top-level replies to a post, so we
+            # look for those top-level comments on each post:
+            for comment in comments:
+                if comment.author == str(username):
+                    logging.info(
+                        f'Submission {submission.id} has already been answered.')
+                    already_replied = True
+                    break
 
-        #     else:
-        #         logging.info(
-        #             f'Submission {submission.id} has already been answered.')
+            if not already_replied:
+                logging.info("No bot replies found. Reply with bot message.")
+                bot_comment = await submission.reply(bot_message)
+                await bot_comment.mod.distinguish(how='yes', sticky=True)
+                await bot_comment.mod.lock()
 
-    # Kill the connection to Reddit.
+            # Kill the connection to Reddit.
     await reddit.close()
     logging.info("Finished running the bot.")
 
