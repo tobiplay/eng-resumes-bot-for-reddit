@@ -2,6 +2,7 @@ from logging import raiseExceptions
 import praw
 import os
 
+
 def main():
     try:
         # Dev environment on local machine
@@ -34,11 +35,15 @@ def main():
 *Beep, boop - this is an automated reply. If you've got any questions surrounding my existance, please [contact the moderators of this subreddit](https://www.reddit.com/message/compose/?to=/r/engineeringresumes&subject=Problem%20or%20question%20regarding%20bot&message=)!*
 '''
 
-    submission_limit = int(os.environ['SUBMISSION_LIMIT'])
+    submission_limit = os.environ['SUBMISSION_LIMIT']
 
-    if submission_limit > 20:
-        print("Submission limit is too high at {} and therefore automatically set to 20".format(submission_limit))
-        submission_limit = 20
+    # if submission_limit > 20:
+    #     print("Submission limit is too high at {} and therefore automatically set to 20".format(
+    #         submission_limit))
+    #     submission_limit = 20
+
+    # Overwrite the `submission_limit` var for now:
+    submission_limit = 20
 
     # Are we able to only read but not edit comments? -> False, if we can edit them, too
     # print(reddit.read_only)
@@ -54,9 +59,10 @@ def main():
         # State for if the bot has already replied to the submission
         # Necessary, because Heroku Dynos don't allow persistance for any kind of data
         already_answered = False
-        print("Currently checking submission {} with the title '{}...'".format(str(submission.id), str(submission.title)[:15]))
+        print("Currently checking submission {} with the title '{}...'".format(
+            str(submission.id), str(submission.title)[:15]))
 
-        while not already_answered: 
+        while not already_answered:
 
             # The bot will only make top-level replies to a post, so we only look for those top-level comments on each post
             for comment in submission.comments:
@@ -65,19 +71,21 @@ def main():
                     # Was already answered -> exit loop and exit the routine as we don't need to check any more comments
                     already_answered = True
                     break
-            
+
             # There is no top-level comment from our bot -> We now need to comment with the bot_message
             if not already_answered:
                 bot_comment = submission.reply(bot_message)
                 bot_comment.mod.distinguish(how='yes', sticky=True)
                 bot_comment.mod.lock()
-                print('Added a locked bot_message and stickied it on the post "' + submission.title[0:15] + '..."')
+                print('Added a locked bot_message and stickied it on the post "' +
+                      submission.title[0:15] + '..."')
                 already_answered = True
 
-            else: 
+            else:
                 print('Submission has already been answered')
-            
+
             # Now that we added the bot_message to the comments, we can continue with the next submission
+
 
 if __name__ == "__main__":
     main()
