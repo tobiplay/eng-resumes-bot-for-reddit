@@ -1,2 +1,2 @@
-praw
-python-dotenv
+praw=7.6.0
+python-dotenv=0.21.0

@@ -1,25 +1,27 @@
-from logging import raiseExceptions
+import logging
 import praw
 import os
 from dotenv import load_dotenv
 
 
 def main():
+    # Log all messages to the terminal, because we don't want to clutter the
+    # repo for now with log files.
+    # TODO: Add log files to the repo.
+    logging.basicConfig(level=logging.INFO)
 
+    logging.info("Starting bot and loading environment variables.")
     load_dotenv()
 
     try:
-        # Grab the environment variables from .env or the local environment:
+        logging.info("Assigning env vars to Python vars.")
         client_id = os.getenv("CLIENT_ID")
         client_secret = os.getenv("CLIENT_SECRET")
         user_agent = os.getenv("USER_AGENT")
         username = os.getenv("USERNAME")
         password = os.getenv("PASSWORD")
 
-        # Manually overwrite the submission limit for now:
-        submission_limit = 20
-
-        # Create the Reddit instance:
+        logging.info("Creating a Reddit instance via PRAW.")
         reddit = praw.Reddit(
             client_id=client_id,
             client_secret=client_secret,
@@ -31,7 +33,8 @@ def main():
     except:
         raise ConnectionError("Network connection could not be established")
 
-    # The standard bot_message as a reply to new posts:
+    logging.info("Successfully connected to Reddit via PRAW Reddit instance.")
+    logging.info("Describing standard output message of bot.")
     bot_message = '''Hi there! Thanks for posting to r/EngineeringResumes. If you haven't already, make sure to check out these posts and edit your resume accordingly: \n
 - [Wiki](https://www.reddit.com/r/EngineeringResumes/comments/m2cc65/new_and_improved_wiki/) \n
 - [Resume critique videos](https://www.reddit.com/r/EngineeringResumes/comments/j0ujid/resume_critique_videos_5_6/) \n
@@ -41,46 +44,45 @@ def main():
 *Beep, boop - this is an automated reply. If you've got any questions surrounding my existance, please [contact the moderators of this subreddit](https://www.reddit.com/message/compose/?to=/r/engineeringresumes&subject=Problem%20or%20question%20regarding%20bot&message=)!*
 '''
 
-    # Are we able to only read but not edit comments? -> False, if we can edit them, too
-    # print(reddit.read_only)
-
+    logging.info("Creating a subreddit instance.")
     subreddit = reddit.subreddit("engineeringresumes")
-    # print(subreddit.display_name, subreddit.title)
 
-    # Assume you have a Subreddit instance bound to variable `subreddit`
+    logging.info("Creating a stream of new submissions with a limit of 20.")
     for submission in subreddit.new(limit=20):
-        # We'll go through each submission in the subreddit up until the set limit
-        # print(submission.title, submission.score, submission.url, submission.id)
-
-        # State for if the bot has already replied to the submission
-        # Necessary, because Heroku Dynos don't allow persistance for any kind of data
+        # We can't store information about previously answered submissions,
+        # so we have to check if the bot has already replied to the submission.
+        logging.info(
+            f"Checking if submission {str(submission.id)} with the title '{str(submission.title[:15])}...' has already been replied to.")
         already_answered = False
-        print("Currently checking submission {} with the title '{}...'".format(
-            str(submission.id), str(submission.title)[:15]))
 
         while not already_answered:
 
-            # The bot will only make top-level replies to a post, so we only look for those top-level comments on each post
+            # The bot will only make top-level replies to a post, so we only
+            # look for those top-level comments on each post:
             for comment in submission.comments:
-                # Check if the author of current top-level comment is our bot
+                # Check if the author of current top-level comment is our bot:
                 if comment.author == str(username):
-                    # Was already answered -> exit loop and exit the routine as we don't need to check any more comments
+                    # If the post was already replied to, we set the flag to
+                    # True and break out of the loop.
                     already_answered = True
                     break
 
-            # There is no top-level comment from our bot -> We now need to comment with the bot_message
+            # There is no top-level comment from our bot, so we now need to
+            # comment with the defined message.
             if not already_answered:
                 bot_comment = submission.reply(bot_message)
                 bot_comment.mod.distinguish(how='yes', sticky=True)
                 bot_comment.mod.lock()
-                print('Added a locked bot_message and stickied it on the post "' +
-                      submission.title[0:15] + '..."')
+                logging.info(
+                    f'Added a locked bot message to submission {submission.id}.')
+
                 already_answered = True
 
             else:
-                print('Submission has already been answered')
+                logging.info(
+                    f'Submission {submission.id} has already been answered.')
 
-            # Now that we added the bot_message to the comments, we can continue with the next submission
+    logging.info("Finished running the bot.")
 
 
 if __name__ == "__main__":
