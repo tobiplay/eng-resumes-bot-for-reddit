@@ -1,31 +1,38 @@
 from logging import raiseExceptions
 import praw
 import os
+from dotenv import load_dotenv
 
 
 def main():
-    try:
-        # Dev environment on local machine
-        # reddit = praw.Reddit(
-        #     client_id=secret.client_id,
-        #     client_secret=secret.client_secret,
-        #     user_agent=secret.user_agent,
-        #     username=secret.username,
-        #     password=secret.password
-        # )
 
+    load_dotenv()
+
+    try:
+        # Grab the environment variables from .env or the local environment:
+        client_id = os.getenv("CLIENT_ID")
+        client_secret = os.getenv("CLIENT_SECRET")
+        user_agent = os.getenv("USER_AGENT")
+        username = os.getenv("USERNAME")
+        password = os.getenv("PASSWORD")
+        submission_limit = os.getenv("SUBMISSION_LIMIT")
+
+        # Manually overwrite the submission limit for now:
+        submission_limit = 20
+
+        # Create the Reddit instance:
         reddit = praw.Reddit(
-            client_id=os.environ['CLIENT_ID'],
-            client_secret=os.environ['CLIENT_SECRET'],
-            user_agent=os.environ['USER_AGENT'],
-            username=os.environ['USERNAME'],
-            password=os.environ['PASSWORD']
+            client_id=client_id,
+            client_secret=client_secret,
+            user_agent=user_agent,
+            username=username,
+            password=password
         )
 
     except:
         raise ConnectionError("Network connection could not be established")
 
-    # The standard bot_message as a reply to new posts
+    # The standard bot_message as a reply to new posts:
     bot_message = '''Hi there! Thanks for posting to r/EngineeringResumes. If you haven't already, make sure to check out these posts and edit your resume accordingly: \n
 - [Wiki](https://www.reddit.com/r/EngineeringResumes/comments/m2cc65/new_and_improved_wiki/) \n
 - [Resume critique videos](https://www.reddit.com/r/EngineeringResumes/comments/j0ujid/resume_critique_videos_5_6/) \n
@@ -35,15 +42,10 @@ def main():
 *Beep, boop - this is an automated reply. If you've got any questions surrounding my existance, please [contact the moderators of this subreddit](https://www.reddit.com/message/compose/?to=/r/engineeringresumes&subject=Problem%20or%20question%20regarding%20bot&message=)!*
 '''
 
-    submission_limit = os.environ['SUBMISSION_LIMIT']
-
-    # if submission_limit > 20:
-    #     print("Submission limit is too high at {} and therefore automatically set to 20".format(
-    #         submission_limit))
-    #     submission_limit = 20
-
-    # Overwrite the `submission_limit` var for now:
-    submission_limit = 20
+    if submission_limit > 20:
+        print("Submission limit is too high at {} and therefore automatically set to 20".format(
+            submission_limit))
+        submission_limit = 20
 
     # Are we able to only read but not edit comments? -> False, if we can edit them, too
     # print(reddit.read_only)
