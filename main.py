@@ -5,6 +5,14 @@ from dotenv import load_dotenv
 
 
 def main():
+
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.DEBUG)
+    for logger_name in ("praw", "prawcore"):
+        logger = logging.getLogger(logger_name)
+        logger.setLevel(logging.DEBUG)
+        logger.addHandler(handler)
+
     # Log all messages to the terminal, because we don't want to clutter the
     # repo for now with log files.
     # TODO: Add log files to the repo.
@@ -46,9 +54,13 @@ def main():
 
     logging.info("Creating a subreddit instance.")
     subreddit = reddit.subreddit("engineeringresumes")
+    logging.info(f"Grabbed 'r/{subreddit.display_name}'.")
 
     logging.info("Creating a stream of new submissions with a limit of 20.")
-    for submission in subreddit.new(limit=20):
+    new_submissions_20 = subreddit.new(limit=5)
+
+    logging.info("Iterating through the stream of new submissions.")
+    for submission in new_submissions_20:
         # We can't store information about previously answered submissions,
         # so we have to check if the bot has already replied to the submission.
         logging.info(
