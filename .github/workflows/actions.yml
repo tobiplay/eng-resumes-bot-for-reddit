@@ -2,9 +2,8 @@ name: run main.py
 
 on:
   schedule:
-    # Trigger a cron job at every full hour, every day:
-    - cron: "0 * * * *"
-  workflow_dispatch:
+    # Trigger a cron job every hour at 5 minutes past the hour:
+    - cron: "5 * * * *"
 
 jobs:
   build:
