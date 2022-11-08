@@ -4,6 +4,7 @@ on:
   schedule:
     # Trigger a cron job every 5 minutes, on every day:
     - cron: "*/5 * * * *"
+  workflow_dispatch:
 
 jobs:
   build:
