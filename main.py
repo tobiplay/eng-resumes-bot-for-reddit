@@ -40,8 +40,6 @@ async def main():
             password=password
         )
 
-        logging.info(await reddit.user.me())
-
     except:
         raise ConnectionError("Network connection could not be established")
 
