@@ -1,10 +1,11 @@
 import logging
-import praw
+import asyncpraw
+import asyncio
 import os
 from dotenv import load_dotenv
 
 
-def main():
+async def main():
 
     handler = logging.StreamHandler()
     handler.setLevel(logging.DEBUG)
@@ -30,7 +31,7 @@ def main():
         password = os.getenv("PASSWORD")
 
         logging.info("Creating a Reddit instance via PRAW.")
-        reddit = praw.Reddit(
+        reddit = asyncpraw.Reddit(
             client_id=client_id,
             client_secret=client_secret,
             user_agent=user_agent,
@@ -53,14 +54,11 @@ def main():
 '''
 
     logging.info("Creating a subreddit instance.")
-    subreddit = reddit.subreddit("engineeringresumes")
+    subreddit = await reddit.subreddit("engineeringresumes", fetch=True)
     logging.info(f"Grabbed 'r/{subreddit.display_name}'.")
 
-    logging.info("Creating a stream of new submissions with a limit of 20.")
-    new_submissions_20 = subreddit.new(limit=5)
-
-    logging.info("Iterating through the stream of new submissions.")
-    for submission in new_submissions_20:
+    logging.info("Iterating through the stream of new 20 submissions.")
+    async for submission in subreddit.new(limit=5):
         logging.info(f"Inside submission '{submission.title}'")
         # # We can't store information about previously answered submissions,
         # # so we have to check if the bot has already replied to the submission.
@@ -95,8 +93,10 @@ def main():
         #         logging.info(
         #             f'Submission {submission.id} has already been answered.')
 
+    # Kill the connection to Reddit.
+    await reddit.close()
     logging.info("Finished running the bot.")
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
