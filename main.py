@@ -20,6 +20,7 @@ async def main():
     logging.basicConfig(level=logging.INFO)
 
     logging.info("Starting bot and loading environment variables.")
+
     load_dotenv()
 
     logging.info("Assigning env vars to Python vars.")
@@ -30,9 +31,6 @@ async def main():
         username = os.getenv("USERNAME")
         password = os.getenv("PASSWORD")
 
-        logging.info(f"Client ID: {client_id}")
-        logging.info(f"Type of Client ID: {type(client_id)}")
-
         logging.info("Creating a Reddit instance via PRAW.")
         reddit = asyncpraw.Reddit(
             client_id=client_id,
@@ -41,6 +39,8 @@ async def main():
             username=username,
             password=password
         )
+
+        logging.info(await reddit.user.me())
 
     except:
         raise ConnectionError("Network connection could not be established")
