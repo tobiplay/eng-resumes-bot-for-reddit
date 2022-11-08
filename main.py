@@ -21,8 +21,8 @@ def main():
     logging.info("Starting bot and loading environment variables.")
     load_dotenv()
 
+    logging.info("Assigning env vars to Python vars.")
     try:
-        logging.info("Assigning env vars to Python vars.")
         client_id = os.getenv("CLIENT_ID")
         client_secret = os.getenv("CLIENT_SECRET")
         user_agent = os.getenv("USER_AGENT")
@@ -61,38 +61,39 @@ def main():
 
     logging.info("Iterating through the stream of new submissions.")
     for submission in new_submissions_20:
-        # We can't store information about previously answered submissions,
-        # so we have to check if the bot has already replied to the submission.
-        logging.info(
-            f"Checking if submission {str(submission.id)} with the title '{str(submission.title[:15])}...' has already been replied to.")
-        already_answered = False
+        logging.info(f"Inside submission '{submission.title}'")
+        # # We can't store information about previously answered submissions,
+        # # so we have to check if the bot has already replied to the submission.
+        # logging.info(
+        #     f"Checking if submission {str(submission.id)} with the title '{str(submission.title[:15])}...' has already been replied to.")
+        # already_answered = False
 
-        while not already_answered:
+        # while not already_answered:
 
-            # The bot will only make top-level replies to a post, so we only
-            # look for those top-level comments on each post:
-            for comment in submission.comments:
-                # Check if the author of current top-level comment is our bot:
-                if comment.author == str(username):
-                    # If the post was already replied to, we set the flag to
-                    # True and break out of the loop.
-                    already_answered = True
-                    break
+        #     # The bot will only make top-level replies to a post, so we only
+        #     # look for those top-level comments on each post:
+        #     for comment in submission.comments:
+        #         # Check if the author of current top-level comment is our bot:
+        #         if comment.author == str(username):
+        #             # If the post was already replied to, we set the flag to
+        #             # True and break out of the loop.
+        #             already_answered = True
+        #             break
 
-            # There is no top-level comment from our bot, so we now need to
-            # comment with the defined message.
-            if not already_answered:
-                bot_comment = submission.reply(bot_message)
-                bot_comment.mod.distinguish(how='yes', sticky=True)
-                bot_comment.mod.lock()
-                logging.info(
-                    f'Added a locked bot message to submission {submission.id}.')
+        #     # There is no top-level comment from our bot, so we now need to
+        #     # comment with the defined message.
+        #     if not already_answered:
+        #         bot_comment = submission.reply(bot_message)
+        #         bot_comment.mod.distinguish(how='yes', sticky=True)
+        #         bot_comment.mod.lock()
+        #         logging.info(
+        #             f'Added a locked bot message to submission {submission.id}.')
 
-                already_answered = True
+        #         already_answered = True
 
-            else:
-                logging.info(
-                    f'Submission {submission.id} has already been answered.')
+        #     else:
+        #         logging.info(
+        #             f'Submission {submission.id} has already been answered.')
 
     logging.info("Finished running the bot.")
 
