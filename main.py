@@ -30,6 +30,9 @@ async def main():
         username = os.getenv("USERNAME")
         password = os.getenv("PASSWORD")
 
+        logging.info(f"Client ID: {client_id}")
+        logging.info(f"Type of Client ID: {type(client_id)}")
+
         logging.info("Creating a Reddit instance via PRAW.")
         reddit = asyncpraw.Reddit(
             client_id=client_id,
@@ -54,7 +57,7 @@ async def main():
 '''
 
     logging.info("Creating a subreddit instance.")
-    subreddit = await reddit.subreddit("engineeringresumes", fetch=True)
+    subreddit = await reddit.subreddit("engineeringresumes")
     logging.info(f"Grabbed 'r/{subreddit.display_name}'.")
 
     logging.info("Iterating through the stream of new 20 submissions.")
