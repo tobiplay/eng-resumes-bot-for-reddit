@@ -2,8 +2,8 @@ name: run main.py
 
 on:
   schedule:
-    # Trigger a cron job every hour at 5 minutes past the hour:
-    - cron: "5 * * * *"
+    # Trigger a cron job at every 30th minute:
+    - cron: "*/30 * * * *"
 
 jobs:
   build:
