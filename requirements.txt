@@ -1,3 +1,2 @@
 praw
-os
-logging
+python-dotenv
