@@ -2,8 +2,6 @@ import asyncpraw
 import logging
 import unittest
 from main import set_up_logger, instatiate_reddit
-from dotenv import load_dotenv
-import os
 
 
 class LoggerTestCase(unittest.TestCase):
