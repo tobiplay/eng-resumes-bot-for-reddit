@@ -5,28 +5,29 @@ from main import set_up_logger, instatiate_reddit
 
 
 class LoggerTestCase(unittest.TestCase):
-    '''Tests that check the logger instantiation and levels.
+    """Tests that check the logger instantiation and levels.
 
-    The logger should be set up to log all messages to the terminal. We're also interested in the logger levels for the PRAW and PRAWCore loggers.'''
+    The logger should be set up to log all messages to the terminal. We're also interested in the logger levels for the PRAW and PRAWCore loggers.
+    """
 
     def setUp(self):
         set_up_logger()
 
     def testLoggerLevel(self):
         self.assertTrue(isinstance(logging.getLogger("praw"), logging.Logger))
-        self.assertTrue(isinstance(
-            logging.getLogger("prawcore"), logging.Logger))
+        self.assertTrue(isinstance(logging.getLogger("prawcore"), logging.Logger))
         self.assertTrue(isinstance(logging.getLogger(), logging.Logger))
 
 
 class RedditInstanceTestCase(unittest.IsolatedAsyncioTestCase):
-    '''Tests that check the Reddit instance creation and connection to the Reddit API.'''
+    """Tests that check the Reddit instance creation and connection to the Reddit API."""
+
     reddit: asyncpraw.Reddit
 
     async def testCreateSubredditInstance(self):
-        '''Tests the connection to and interaction with the Reddit API.
+        """Tests the connection to and interaction with the Reddit API.
 
-        We should be able to create a Reddit instance and connect to the Reddit API.'''
+        We should be able to create a Reddit instance and connect to the Reddit API."""
 
         return_array = await instatiate_reddit()
 

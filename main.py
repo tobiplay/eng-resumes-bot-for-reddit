@@ -18,8 +18,7 @@ def set_up_logger():
     # TODO: Add log files to the repo.
     logging.basicConfig(level=logging.INFO)
 
-    logging.info(
-        "Logger set up. Starting bot.")
+    logging.info("Logger set up. Starting bot.")
 
 
 async def instatiate_reddit():
@@ -41,7 +40,7 @@ async def instatiate_reddit():
         client_secret=client_secret,
         user_agent=user_agent,
         username=username,
-        password=password
+        password=password,
     )
 
     return [reddit, username]
@@ -55,17 +54,18 @@ async def main():
         username = return_array[1]
 
         logging.info(
-            "Successfully connected to Reddit via PRAW Reddit instance. Returning Reddit instance and username.")
+            "Successfully connected to Reddit via PRAW Reddit instance. Returning Reddit instance and username."
+        )
 
         logging.info("Describing standard output message of bot.")
-        bot_message = '''Hi there! Thanks for posting to r/EngineeringResumes. If you haven't already, make sure to check out these posts and edit your resume accordingly: \n
+        bot_message = """Hi there! Thanks for posting to r/EngineeringResumes. If you haven't already, make sure to check out these posts and edit your resume accordingly: \n
 - [Wiki](https://reddit.com/r/EngineeringResumes/wiki/) \n
 - [Resume critique videos](https://www.reddit.com/r/EngineeringResumes/comments/j0ujid/resume_critique_videos_5_6/) \n
 - [Resume redline albums](https://www.reddit.com/r/EngineeringResumes/comments/p5y5at/resume_redline_imgur_albums/) \n
 - [Learn how to apply the STAR method](https://www.careereducation.columbia.edu/resources/resumes-impact-creating-strong-bullet-points) \n
 - [Learn how to apply the XYZ method](https://www.inc.com/bill-murphy-jr/google-recruiters-say-these-5-resume-tips-including-x-y-z-formula-will-improve-your-odds-of-getting-hired-at-google.html) \n
 *Beep, boop - this is an automated reply. If you've got any questions surrounding my existance, please [contact the moderators of this subreddit](https://www.reddit.com/message/compose/?to=/r/engineeringresumes&subject=Problem%20or%20question%20regarding%20bot&message=)!*
-'''
+"""
 
         subreddit = await reddit.subreddit("engineeringresumes", fetch=True)
         logging.info(f"Grabbed 'r/{subreddit.display_name}'.")
@@ -78,7 +78,8 @@ async def main():
             # so we have to check if the bot has already replied to the
             # submission.
             logging.info(
-                f"Checking if submission {str(submission.id)} with the title '{str(submission.title[:15])}...' has already been replied to.")
+                f"Checking if submission {str(submission.id)} with the title '{str(submission.title[:15])}...' has already been replied to."
+            )
 
             # The bot will only make top-level replies to a post, so we
             # look for those top-level comments on each post:
@@ -89,7 +90,7 @@ async def main():
             if not comments:
                 logging.info("No comments found. Reply with bot message.")
                 bot_comment = await submission.reply(bot_message)
-                await bot_comment.mod.distinguish(how='yes', sticky=True)
+                await bot_comment.mod.distinguish(how="yes", sticky=True)
                 await bot_comment.mod.lock()
 
             else:
@@ -101,15 +102,15 @@ async def main():
                 for comment in comments:
                     if comment.author == str(username):
                         logging.info(
-                            f'Submission {submission.id} has already been answered.')
+                            f"Submission {submission.id} has already been answered."
+                        )
                         already_replied = True
                         break
 
                 if not already_replied:
-                    logging.info(
-                        "No bot replies found. Reply with bot message.")
+                    logging.info("No bot replies found. Reply with bot message.")
                     bot_comment = await submission.reply(bot_message)
-                    await bot_comment.mod.distinguish(how='yes', sticky=True)
+                    await bot_comment.mod.distinguish(how="yes", sticky=True)
                     await bot_comment.mod.lock()
 
         # Kill the connection to Reddit.
