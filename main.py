@@ -70,9 +70,9 @@ async def main() -> bool:
         bot_message = """Hi there! Thanks for posting to r/EngineeringResumes. If you haven't already, make sure to check out these posts and edit your resume accordingly: \n
 - [Wiki](https://reddit.com/r/EngineeringResumes/wiki/) \n
 - [Recommended resume templates](https://www.reddit.com/r/EngineeringResumes/wiki/resumetemplates) \n
-- [How to write good bullet points?](https://www.reddit.com/r/EngineeringResumes/wiki/index/#wiki_each_bullet_point_should_follow_star_or_xyz) \n
-- [How to apply the STAR method?](https://www.careereducation.columbia.edu/resources/resumes-impact-creating-strong-bullet-points) \n
-- [How to apply the XYZ method?](https://www.inc.com/bill-murphy-jr/google-recruiters-say-these-5-resume-tips-including-x-y-z-formula-will-improve-your-odds-of-getting-hired-at-google.html) \n
+- [How to write good bullet points](https://www.reddit.com/r/EngineeringResumes/wiki/index/#wiki_each_bullet_point_should_follow_star_or_xyz) \n
+- [How to apply the STAR method](https://www.careereducation.columbia.edu/resources/resumes-impact-creating-strong-bullet-points) \n
+- [How to apply the XYZ method](https://www.inc.com/bill-murphy-jr/google-recruiters-say-these-5-resume-tips-including-x-y-z-formula-will-improve-your-odds-of-getting-hired-at-google.html) \n
 - [Resume critique photo albums](https://www.reddit.com/r/EngineeringResumes/comments/p5y5at/resume_redline_imgur_albums/) \n
 - [Resume critique videos](https://www.reddit.com/r/EngineeringResumes/comments/j0ujid/resume_critique_videos_5_6/) \n
 *Beep, boop––this is an automated reply. If you've got any questions surrounding my existance, please [contact the moderators of this subreddit](https://www.reddit.com/message/compose/?to=/r/engineeringresumes&subject=Problem%20or%20question%20regarding%20bot&message=)!*
