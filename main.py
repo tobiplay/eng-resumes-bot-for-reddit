@@ -59,8 +59,8 @@ async def main() -> bool:
     try:
         return_array = await instatiate_reddit()
 
-        reddit = return_array[0]
-        username = return_array[1]
+        reddit: asyncpraw.Reddit = return_array[0]
+        username: str = return_array[1]
 
         logging.info(
             "Successfully connected to Reddit via PRAW Reddit instance. Returning Reddit instance and username.",
@@ -91,6 +91,13 @@ async def main() -> bool:
             logging.info(
                 f"Checking if submission {str(submission.id)} with the title '{str(submission.title[:15])}...' has already been replied to.",
             )
+
+            if submission.link_flair_text in ["Meta", "Discussion", "Success Story!"]:
+                logging.info(
+                    f"Submission {str(submission.id)} contains a flair that indicates that it should not be answered. Skipping it.",
+                )
+
+                continue
 
             # The bot will only make top-level replies to a post, so we
             # look for those top-level comments on each post:
