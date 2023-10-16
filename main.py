@@ -1,3 +1,4 @@
+"""Module as the main entry point for the bot."""
 import asyncio
 import logging
 import os
@@ -6,7 +7,8 @@ import asyncpraw
 from dotenv import load_dotenv
 
 
-def set_up_logger():
+def set_up_logger() -> None:
+    """Set up the logger."""
     handler = logging.StreamHandler()
     handler.setLevel(logging.DEBUG)
     for logger_name in ("praw", "prawcore"):
@@ -16,13 +18,14 @@ def set_up_logger():
 
     # Log all messages to the terminal, because we don't want to clutter the
     # repo for now with log files.
-    # TODO: Add log files to the repo.
+    # TODO(TobiPlay): Add log files to the repo.
     logging.basicConfig(level=logging.INFO)
 
     logging.info("Logger set up. Starting bot.")
 
 
-async def instatiate_reddit():
+async def instatiate_reddit() -> list:
+    """Instantiate the Reddit instance."""
     set_up_logger()
 
     logging.info("Loading environment variables.")
@@ -47,7 +50,12 @@ async def instatiate_reddit():
     return [reddit, username]
 
 
-async def main():
+async def main() -> bool:
+    """Run the bot.
+
+    The bot will reply with a pre-defined message to a set of previous posts.
+
+    """
     try:
         return_array = await instatiate_reddit()
 
