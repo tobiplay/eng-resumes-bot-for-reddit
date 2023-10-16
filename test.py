@@ -1,7 +1,9 @@
-import asyncpraw
 import logging
 import unittest
-from main import set_up_logger, instatiate_reddit
+
+import asyncpraw
+
+from main import instatiate_reddit, set_up_logger
 
 
 class LoggerTestCase(unittest.TestCase):
@@ -27,15 +29,15 @@ class RedditInstanceTestCase(unittest.IsolatedAsyncioTestCase):
     async def testCreateSubredditInstance(self):
         """Tests the connection to and interaction with the Reddit API.
 
-        We should be able to create a Reddit instance and connect to the Reddit API."""
-
+        We should be able to create a Reddit instance and connect to the Reddit API.
+        """
         return_array = await instatiate_reddit()
 
         self.reddit = return_array[0]
         username = return_array[1]
 
         self.assertTrue(isinstance(self.reddit, asyncpraw.Reddit))
-        self.assertTrue((username != None))
+        self.assertTrue((username is not None))
 
         await self.reddit.close()
 

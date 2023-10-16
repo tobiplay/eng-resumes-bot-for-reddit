@@ -1,7 +1,8 @@
-import logging
-import asyncpraw
 import asyncio
+import logging
 import os
+
+import asyncpraw
 from dotenv import load_dotenv
 
 
@@ -54,7 +55,7 @@ async def main():
         username = return_array[1]
 
         logging.info(
-            "Successfully connected to Reddit via PRAW Reddit instance. Returning Reddit instance and username."
+            "Successfully connected to Reddit via PRAW Reddit instance. Returning Reddit instance and username.",
         )
 
         logging.info("Describing standard output message of bot.")
@@ -78,7 +79,7 @@ async def main():
             # so we have to check if the bot has already replied to the
             # submission.
             logging.info(
-                f"Checking if submission {str(submission.id)} with the title '{str(submission.title[:15])}...' has already been replied to."
+                f"Checking if submission {str(submission.id)} with the title '{str(submission.title[:15])}...' has already been replied to.",
             )
 
             # The bot will only make top-level replies to a post, so we
@@ -102,7 +103,7 @@ async def main():
                 for comment in comments:
                     if comment.author == str(username):
                         logging.info(
-                            f"Submission {submission.id} has already been answered."
+                            f"Submission {submission.id} has already been answered.",
                         )
                         already_replied = True
                         break
